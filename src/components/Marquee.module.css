@@ -1,0 +1,42 @@
+/* src/components/Marquee.module.css */
+.wrap {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1.2rem 0;
+  position: relative;
+  z-index: 1;
+  background: var(--bg2);
+}
+
+.track {
+  display: flex;
+  gap: 3rem;
+  animation: mq 30s linear infinite;
+  white-space: nowrap;
+  width: max-content;
+}
+
+.item {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  transition: color 0.3s;
+}
+
+.item:hover { color: var(--text); }
+
+.dot {
+  color: var(--accent);
+  font-size: 0.5rem;
+}
+
+@keyframes mq {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}

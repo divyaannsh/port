@@ -1,0 +1,14 @@
+:root {
+  --bg: #03030d; --bg2: #06061a; --surface: #0a0a1f;
+  --accent: #64ffda; --accent2: #ff6584; --accent3: #ffd166;
+  --purple: #a78bfa; --blue: #60a5fa; --orange: #f97316;
+  --text: #e2e8f0; --muted: #4b6280; --border: rgba(255,255,255,0.05);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:'Cabinet Grotesk',sans-serif; overflow-x:hidden; cursor:none; }
+a { text-decoration:none; color:inherit; }
+::-webkit-scrollbar { width:3px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--accent); }
+::selection { background:rgba(100,255,218,0.15); }
