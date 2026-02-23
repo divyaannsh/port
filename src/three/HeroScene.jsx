@@ -5,207 +5,251 @@ import * as THREE from 'three';
 
 const lerp = (a, b, t) => a + (b - a) * t;
 
-// ─── Fighter Jet with Sonic Boom ─────────────────────────────────────────────
-function FighterJet({ mouseX, mouseY }) {
+// ─── Fighter Jet (no sonic boom) ───────────────────────────────────────────────
+function FighterJet({ mouseX, mouseY, period = 6, offsetT = 0, baseZ = 1.5, scale = 1 }) {
   const groupRef = useRef();
-  const coneRef = useRef();
-  const ringRef = useRef();
-  const ring2Ref = useRef();
   const exhaustLRef = useRef();
   const exhaustRRef = useRef();
   const cockpitRef = useRef();
-  const targetPos = useRef({ x: -14, y: 0 });
   const curPos = useRef({ x: -14, y: 0 });
 
-  // Jet flies from x=-14 → x=+14 at y=2.8, z=1.5, loops every 5s
   useFrame(({ clock }) => {
-    const t = clock.getElapsedTime();
-    const period = 6.0;
-    const progress = (t % period) / period;     // 0→1, wraps cleanly
+    const t = clock.getElapsedTime() + offsetT;
+    const prg = (t % period) / period;
+    if (prg < 0.025) curPos.current.x = -14;  // teleport back silently
 
-    // When a new pass starts (progress near 0), snap curPos back to left edge
-    if (progress < 0.02) {
-      curPos.current.x = -14;
-    }
-
-    const sweepX = lerp(-14, 14, progress);     // always left → right
-
-    const mx = mouseX ? mouseX.current : 0;
+    const sweepX = lerp(-14, 14, prg);
     const my = mouseY ? mouseY.current : 0;
-    targetPos.current.x = sweepX;
-    targetPos.current.y = -my * 3.2;
 
-    curPos.current.x = lerp(curPos.current.x, targetPos.current.x, 0.18);
-    curPos.current.y = lerp(curPos.current.y, targetPos.current.y, 0.08);
+    curPos.current.x = lerp(curPos.current.x, sweepX, 0.18);
+    curPos.current.y = lerp(curPos.current.y, -my * 3.2, 0.06);
 
     if (groupRef.current) {
-      groupRef.current.position.x = curPos.current.x;
-      groupRef.current.position.y = curPos.current.y + Math.sin(t * 3.5) * 0.06;
-      groupRef.current.position.z = 1.5;
-      // Slight roll
-      groupRef.current.rotation.z = Math.sin(t * 2.2) * 0.06;
+      groupRef.current.position.set(
+        curPos.current.x,
+        curPos.current.y + Math.sin(t * 3.5) * 0.05,
+        baseZ
+      );
+      groupRef.current.rotation.z = Math.sin(t * 2.2) * 0.05;
     }
 
-    // Sonic boom cone — Mach cone pulsing opacity
-    if (coneRef.current) {
-      coneRef.current.material.opacity = 0.12 + Math.sin(t * 8) * 0.06;
-    }
-
-    // Shockwave ring 1 — expands and fades
-    if (ringRef.current) {
-      const s = 0.5 + ((t * 2.2) % 1.8) * 1.4;  // 0.5→3.0
-      const op = Math.max(0, 1.0 - ((t * 2.2) % 1.8) / 1.8);
-      ringRef.current.scale.set(s, s, 1);
-      ringRef.current.material.opacity = op * 0.55;
-    }
-    // Shockwave ring 2 — offset phase
-    if (ring2Ref.current) {
-      const phase = ((t * 2.2 + 0.9) % 1.8);
-      const s = 0.5 + phase * 1.4;
-      const op = Math.max(0, 1.0 - phase / 1.8);
-      ring2Ref.current.scale.set(s, s, 1);
-      ring2Ref.current.material.opacity = op * 0.38;
-    }
-
-    // Afterburner flicker
     const flicker = 0.8 + Math.sin(t * 40) * 0.25 + Math.sin(t * 17) * 0.15;
     if (exhaustLRef.current) exhaustLRef.current.material.emissiveIntensity = flicker;
     if (exhaustRRef.current) exhaustRRef.current.material.emissiveIntensity = flicker;
-
-    // Cockpit glow pulse
     if (cockpitRef.current) cockpitRef.current.material.emissiveIntensity = 0.6 + Math.sin(t * 1.8) * 0.2;
   });
 
   return (
-    <group ref={groupRef}>
-      {/* ── Fuselage ── */}
-      {/* Main body */}
+    <group ref={groupRef} scale={[scale, scale, scale]}>
+      {/* fuselage */}
       <mesh rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.055, 0.018, 1.1, 10]} />
         <meshStandardMaterial color="#b0bec5" roughness={0.18} metalness={0.92} />
       </mesh>
-      {/* Nose cone */}
+      {/* nose */}
       <mesh position={[0.62, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
         <coneGeometry args={[0.055, 0.32, 10]} />
         <meshStandardMaterial color="#cfd8dc" roughness={0.12} metalness={0.95} />
       </mesh>
-      {/* Tail taper */}
+      {/* tail taper */}
       <mesh position={[-0.58, 0, 0]} rotation={[0, 0, -Math.PI / 2]}>
         <coneGeometry args={[0.045, 0.22, 8]} />
         <meshStandardMaterial color="#90a4ae" roughness={0.22} metalness={0.88} />
       </mesh>
-
-      {/* ── Cockpit ── */}
+      {/* cockpit */}
       <mesh ref={cockpitRef} position={[0.28, 0.06, 0]}>
         <sphereGeometry args={[0.065, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial
-          color="#40c4ff" emissive="#40c4ff" emissiveIntensity={0.6}
-          transparent opacity={0.72} roughness={0.05} metalness={0.1}
-        />
+        <meshStandardMaterial color="#40c4ff" emissive="#40c4ff" emissiveIntensity={0.6}
+          transparent opacity={0.72} roughness={0.05} metalness={0.1} />
       </mesh>
-
-      {/* ── Delta Wings ── */}
-      <mesh position={[0, 0, 0]} rotation={[0, 0, 0]}>
+      {/* delta wings */}
+      <mesh>
         <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
+          <bufferAttribute attach="attributes-position"
             array={new Float32Array([
-              // left wing
               -0.28, 0, 0.04, 0.22, 0, 0.04, -0.22, 0, 0.72,
-              // right wing
               -0.28, 0, -0.04, -0.22, 0, -0.72, 0.22, 0, -0.04,
-            ])}
-            count={6} itemSize={3}
-          />
-          <bufferAttribute
-            attach="attributes-normal"
-            array={new Float32Array([
-              0, 1, 0, 0, 1, 0, 0, 1, 0,
-              0, 1, 0, 0, 1, 0, 0, 1, 0,
-            ])}
-            count={6} itemSize={3}
-          />
+            ])} count={6} itemSize={3} />
+          <bufferAttribute attach="attributes-normal"
+            array={new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0])}
+            count={6} itemSize={3} />
         </bufferGeometry>
         <meshStandardMaterial color="#90a4ae" roughness={0.2} metalness={0.9} side={THREE.DoubleSide} />
       </mesh>
-
-      {/* ── Tail Fins (vertical) ── */}
+      {/* vertical tail fins */}
       {[0.12, -0.12].map((z, i) => (
         <mesh key={i} position={[-0.42, 0.05, z]}>
           <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              array={new Float32Array([
-                -0.14, 0, 0, 0.06, 0, 0, -0.1, 0.22, 0,
-              ])}
-              count={3} itemSize={3}
-            />
-            <bufferAttribute
-              attach="attributes-normal"
-              array={new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1])}
-              count={3} itemSize={3}
-            />
+            <bufferAttribute attach="attributes-position"
+              array={new Float32Array([-0.14, 0, 0, 0.06, 0, 0, -0.1, 0.22, 0])}
+              count={3} itemSize={3} />
+            <bufferAttribute attach="attributes-normal"
+              array={new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1])} count={3} itemSize={3} />
           </bufferGeometry>
           <meshStandardMaterial color="#78909c" roughness={0.22} metalness={0.88} side={THREE.DoubleSide} />
         </mesh>
       ))}
-
-      {/* ── Engines / afterburner ── */}
+      {/* engines + afterburner */}
       {[0.14, -0.14].map((z, i) => (
         <group key={i} position={[-0.52, 0, z]}>
           <mesh rotation={[0, 0, Math.PI / 2]}>
             <cylinderGeometry args={[0.032, 0.028, 0.12, 8]} />
             <meshStandardMaterial color="#455a64" roughness={0.25} metalness={0.9} />
           </mesh>
-          {/* afterburner flame */}
-          <mesh
-            ref={i === 0 ? exhaustLRef : exhaustRRef}
-            position={[-0.14, 0, 0]} rotation={[0, 0, Math.PI / 2]}
-          >
+          <mesh ref={i === 0 ? exhaustLRef : exhaustRRef}
+            position={[-0.14, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
             <coneGeometry args={[0.028, 0.28, 8]} />
-            <meshStandardMaterial
-              color="#ff6d00" emissive="#ff3d00" emissiveIntensity={1.2}
-              transparent opacity={0.82} side={THREE.DoubleSide}
-            />
+            <meshStandardMaterial color="#ff6d00" emissive="#ff3d00" emissiveIntensity={1.2}
+              transparent opacity={0.82} side={THREE.DoubleSide} />
           </mesh>
-          {/* inner hot core */}
           <mesh position={[-0.09, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
             <coneGeometry args={[0.014, 0.14, 6]} />
-            <meshStandardMaterial
-              color="#ffffff" emissive="#ffea00" emissiveIntensity={2.5}
-              transparent opacity={0.65}
-            />
+            <meshStandardMaterial color="#fff" emissive="#ffea00" emissiveIntensity={2.5}
+              transparent opacity={0.65} />
+          </mesh>
+        </group>
+      ))}
+      <pointLight position={[-0.5, 0, 0]} color="#ff6d00" intensity={1.4} distance={1.5} decay={2} />
+    </group>
+  );
+}
+
+// ─── Passenger Plane (Boeing-style wide body) ─────────────────────────────
+// Props: period = loop duration, offsetT = time offset for staggering,
+//        baseY = fixed altitude, baseZ = depth, scale = size multiplier
+function PassengerPlane({ period = 9, offsetT = 0, baseY = 2, baseZ = 0.5, scale = 1 }) {
+  const groupRef = useRef();
+  const curX = useRef(-14);
+
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime() + offsetT;
+    const prg = (t % period) / period;
+    if (prg < 0.02) curX.current = -14;
+    curX.current = lerp(curX.current, lerp(-14, 14, prg), 0.14);
+
+    if (groupRef.current) {
+      groupRef.current.position.set(
+        curX.current,
+        baseY + Math.sin(t * 0.8) * 0.12,
+        baseZ
+      );
+      // gentle banking
+      groupRef.current.rotation.z = Math.sin(t * 0.5) * 0.025;
+    }
+  });
+
+  return (
+    <group ref={groupRef} scale={[scale, scale, scale]}>
+      {/* — Fuselage (wide oval tube) — */}
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.09, 0.09, 1.8, 14]} />
+        <meshStandardMaterial color="#e8eef5" roughness={0.25} metalness={0.6} />
+      </mesh>
+      {/* nose dome */}
+      <mesh position={[0.96, 0, 0]}>
+        <sphereGeometry args={[0.09, 12, 8, 0, Math.PI]} />
+        <meshStandardMaterial color="#dde6f0" roughness={0.2} metalness={0.55} />
+      </mesh>
+      {/* tail taper */}
+      <mesh position={[-0.96, 0, 0]} rotation={[0, 0, -Math.PI / 2]}>
+        <coneGeometry args={[0.09, 0.38, 12]} />
+        <meshStandardMaterial color="#cdd8e8" roughness={0.28} metalness={0.55} />
+      </mesh>
+
+      {/* — Cockpit windows strip — */}
+      {[-0.035, 0, 0.035].map((z, i) => (
+        <mesh key={i} position={[0.72, 0.07, z]}>
+          <boxGeometry args={[0.06, 0.04, 0.025]} />
+          <meshStandardMaterial color="#87ceeb" emissive="#87ceeb" emissiveIntensity={0.4}
+            transparent opacity={0.85} roughness={0.05} />
+        </mesh>
+      ))}
+
+      {/* — Fuselage side windows (tiny dots along body) — */}
+      {Array.from({ length: 12 }).map((_, i) => (
+        <mesh key={i} position={[0.55 - i * 0.12, 0.09, 0.091]}>
+          <boxGeometry args={[0.04, 0.04, 0.005]} />
+          <meshStandardMaterial color="#b8daf8" emissive="#b8daf8" emissiveIntensity={0.3}
+            transparent opacity={0.7} />
+        </mesh>
+      ))}
+
+      {/* — Swept wings — */}
+      {[1, -1].map((side, si) => (
+        <mesh key={si}>
+          <bufferGeometry>
+            <bufferAttribute attach="attributes-position"
+              array={new Float32Array([
+                0.15, -0.02, 0,
+                0.15, -0.02, side * 0.08,
+                -0.35, -0.02, side * 1.6,
+                -0.35, -0.02, side * 1.65,
+                0.15, -0.02, side * 0.13,
+                0.15, -0.02, 0,
+              ])} count={6} itemSize={3} />
+            <bufferAttribute attach="attributes-normal"
+              array={new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0])}
+              count={6} itemSize={3} />
+          </bufferGeometry>
+          <meshStandardMaterial color="#d0dae8" roughness={0.22} metalness={0.7} side={THREE.DoubleSide} />
+        </mesh>
+      ))}
+
+      {/* — Wing tip lights — */}
+      {[1, -1].map((side, si) => (
+        <pointLight key={si} position={[-0.35, -0.02, side * 1.62]}
+          color={side === 1 ? '#ff4444' : '#44ff44'} intensity={0.4} distance={0.8} decay={2} />
+      ))}
+
+      {/* — 4 Engine nacelles under wings — */}
+      {[{ x: -0.05, z: 0.55 }, { x: -0.22, z: 1.1 },
+      { x: -0.05, z: -0.55 }, { x: -0.22, z: -1.1 }].map((p, i) => (
+        <group key={i} position={[p.x, -0.1, p.z]}>
+          {/* nacelle body */}
+          <mesh rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.038, 0.032, 0.28, 10]} />
+            <meshStandardMaterial color="#8090a0" roughness={0.3} metalness={0.85} />
+          </mesh>
+          {/* inlet */}
+          <mesh position={[0.15, 0, 0]}>
+            <torusGeometry args={[0.038, 0.008, 8, 18]} />
+            <meshStandardMaterial color="#607080" roughness={0.2} metalness={0.9} />
           </mesh>
         </group>
       ))}
 
-      {/* ── Sonic Boom Mach Cone ── (trails behind the nose) */}
-      <mesh ref={coneRef} position={[-0.55, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <coneGeometry args={[1.1, 2.8, 32, 1, true]} />
-        <meshBasicMaterial
-          color="#64ffda" transparent opacity={0.14}
-          side={THREE.DoubleSide} depthWrite={false}
-        />
+      {/* — Vertical tail fin — */}
+      <mesh position={[-0.72, 0.06, 0]}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position"
+            array={new Float32Array([
+              -0.28, 0, 0, 0.12, 0, 0, -0.2, 0.38, 0,
+              -0.28, 0, 0.005, 0.12, 0, 0.005, -0.2, 0.38, 0.005,
+            ])} count={6} itemSize={3} />
+          <bufferAttribute attach="attributes-normal"
+            array={new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1])}
+            count={6} itemSize={3} />
+        </bufferGeometry>
+        <meshStandardMaterial color="#d0dae8" roughness={0.25} metalness={0.65} side={THREE.DoubleSide} />
       </mesh>
 
-      {/* ── Shockwave rings ── (facing side, like a mach disc) */}
-      <mesh ref={ringRef} position={[0.76, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <ringGeometry args={[0.18, 0.26, 40]} />
-        <meshBasicMaterial
-          color="#64ffda" transparent opacity={0.55}
-          side={THREE.DoubleSide} depthWrite={false}
-        />
-      </mesh>
-      <mesh ref={ring2Ref} position={[0.76, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <ringGeometry args={[0.18, 0.26, 40]} />
-        <meshBasicMaterial
-          color="#a78bfa" transparent opacity={0.4}
-          side={THREE.DoubleSide} depthWrite={false}
-        />
-      </mesh>
+      {/* — Horizontal stabilisers — */}
+      {[0.18, -0.18].map((z, i) => (
+        <mesh key={i} position={[-0.82, 0, z]}>
+          <bufferGeometry>
+            <bufferAttribute attach="attributes-position"
+              array={new Float32Array([
+                -0.12, 0, 0, 0.06, 0, 0, -0.08, 0, z > 0 ? 0.45 : -0.45,
+              ])} count={3} itemSize={3} />
+            <bufferAttribute attach="attributes-normal"
+              array={new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0])} count={3} itemSize={3} />
+          </bufferGeometry>
+          <meshStandardMaterial color="#d0dae8" roughness={0.25} metalness={0.65} side={THREE.DoubleSide} />
+        </mesh>
+      ))}
 
-      {/* point light for local glow */}
-      <pointLight position={[-0.5, 0, 0]} color="#ff6d00" intensity={1.8} distance={1.8} decay={2} />
+      {/* belly strobe */}
+      <pointLight position={[0, -0.1, 0]} color="#ffffff" intensity={0.3} distance={1.2} decay={2} />
     </group>
   );
 }
@@ -517,7 +561,13 @@ export default function HeroScene({ mouseX, mouseY }) {
       <Robot robotRef={robotRef} headRef={headRef} armLRef={armLRef} armRRef={armRRef}
         legLRef={legLRef} legRRef={legRRef} visorRef={visorRef} />
 
-      <FighterJet mouseX={mouseX} mouseY={mouseY} />
+      {/* — Fighter jet: cursor-tracking Y — */}
+      <FighterJet mouseX={mouseX} mouseY={mouseY} period={6} offsetT={0} baseZ={1.5} scale={1} />
+
+      {/* — Passenger planes at fixed altitudes, staggered — */}
+      <PassengerPlane period={11} offsetT={0} baseY={3.8} baseZ={-0.5} scale={0.85} />
+      <PassengerPlane period={14} offsetT={5.5} baseY={-2.6} baseZ={-1.2} scale={0.7} />
+      <PassengerPlane period={9} offsetT={2.2} baseY={1.4} baseZ={-2.0} scale={0.55} />
     </group>
   );
 }
