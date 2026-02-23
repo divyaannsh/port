@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './Hero.module.css';
 
 const TERMINAL_LINES = [
-  { delay: 0,    text: '$ initializing divyansh.exe', color: '#64ffda' },
-  { delay: 600,  text: '> loading: 4+ years experience', color: '#94a3b8' },
+  { delay: 0, text: '$ initializing divyansh.exe', color: '#64ffda' },
+  { delay: 600, text: '> loading: 4+ years experience', color: '#94a3b8' },
   { delay: 1200, text: '> skills: React, Python, AI/ML, Node', color: '#94a3b8' },
   { delay: 1800, text: '> hackathons: [ARMY, IBM] ✓ qualified', color: '#ffd166' },
   { delay: 2400, text: '> medical_grade: ECG, Sleep Sense ✓', color: '#94a3b8' },
@@ -44,9 +44,9 @@ function LiveStats() {
   return (
     <div className={styles.liveStats}>
       <div className={styles.statRow}><span className={styles.statKey}>LOCAL_TIME</span><span className={styles.statVal}>{time.toLocaleTimeString()}</span></div>
-      <div className={styles.statRow}><span className={styles.statKey}>UPTIME</span><span className={styles.statVal} style={{color:'#4ade80'}}>99.9%</span></div>
-      <div className={styles.statRow}><span className={styles.statKey}>MODE</span><span className={styles.statVal} style={{color:'#ffd166'}}>CREATIVE</span></div>
-      <div className={styles.statRow}><span className={styles.statKey}>THREAT_LVL</span><span className={styles.statVal} style={{color:'#f87171'}}>MINIMAL</span></div>
+      <div className={styles.statRow}><span className={styles.statKey}>UPTIME</span><span className={styles.statVal} style={{ color: '#4ade80' }}>99.9%</span></div>
+      <div className={styles.statRow}><span className={styles.statKey}>MODE</span><span className={styles.statVal} style={{ color: '#ffd166' }}>CREATIVE</span></div>
+      <div className={styles.statRow}><span className={styles.statKey}>THREAT_LVL</span><span className={styles.statVal} style={{ color: '#f87171' }}>MINIMAL</span></div>
     </div>
   );
 }
@@ -72,7 +72,7 @@ export default function Hero() {
           <span className={styles.l2}>Srivastava</span>
         </h1>
         <p className={styles.desc}>
-          Senior-level engineer crafting <em>mission-critical systems</em> — 
+          Senior-level engineer crafting <em>mission-critical systems</em> —
           from IEC 62304 medical devices to AI-powered SaaS platforms.
           Precision-engineered. Battle-tested. Production-ready.
         </p>
@@ -86,7 +86,6 @@ export default function Hero() {
         </div>
         <div className={styles.stats}>
           {[
-            { num: '4+', label: 'Yrs Combat' },
             { num: '10+', label: 'Shipped' },
             { num: '2', label: 'Hackathons' },
             { num: '40%', label: 'Perf Δ' },
@@ -107,9 +106,9 @@ export default function Hero() {
         {/* top bar */}
         <div className={styles.panelBar}>
           <div className={styles.panelDots}>
-            <span style={{background:'#ef4444'}} />
-            <span style={{background:'#fbbf24'}} />
-            <span style={{background:'#4ade80'}} />
+            <span style={{ background: '#ef4444' }} />
+            <span style={{ background: '#fbbf24' }} />
+            <span style={{ background: '#4ade80' }} />
           </div>
           <span className={styles.panelTitle}>DIVYANSH_OS v4.2 — CLASSIFIED</span>
           <div className={styles.panelLed} />

@@ -7,7 +7,7 @@ import styles from './Sections.module.css';
 
 // ─── About ────────────────────────────────────────────────────────
 export function About() {
-  const techs = ['React.js','TypeScript','Node.js','Python','Redux','LangChain','AWS','MongoDB','PyQt5','Tailwind','Docker','OpenAI API','FAISS','Gradio','Plotly'];
+  const techs = ['React.js', 'TypeScript', 'Node.js', 'Python', 'Redux', 'LangChain', 'AWS', 'MongoDB', 'PyQt5', 'Tailwind', 'Docker', 'OpenAI API', 'FAISS', 'Gradio', 'Plotly'];
   return (
     <section id="about" className={styles.about}>
       <div className={styles.sw}>
@@ -141,7 +141,7 @@ export function Skills() {
                   <div key={item.name} className={styles.skillRow}>
                     <span className={styles.skillName}>{item.name}</span>
                     <div className={styles.dots}>
-                      {[1,2,3,4,5].map(d => (
+                      {[1, 2, 3, 4, 5].map(d => (
                         <div key={d} className={`${styles.dot} ${d <= item.level ? styles.dotFilled : ''}`}
                           style={{ '--dot-color': group.color }} />
                       ))}
@@ -197,8 +197,8 @@ export function Contact() {
           </p>
           <div className={styles.contactLinks}>
             <a href="mailto:divyanshsrivastav72@gmail.com" className={styles.btnPrimary}>✉ Email Me</a>
-            <a href="https://linkedin.com/in/divyansh" target="_blank" rel="noreferrer" className={styles.btnGhost}>↗ LinkedIn</a>
-            <a href="https://github.com/divyansh" target="_blank" rel="noreferrer" className={styles.btnGhost}>⌥ GitHub</a>
+            <a href="https://www.linkedin.com/in/divyansh-srivastav-a00127221/" target="_blank" rel="noreferrer" className={styles.btnGhost}>↗ LinkedIn</a>
+            <a href="https://github.com/divyaannsh" target="_blank" rel="noreferrer" className={styles.btnGhost}>⌥ GitHub</a>
           </div>
           <div className={styles.contactInfo}>divyanshsrivastav72@gmail.com · +91 9560350477</div>
         </RevealItem>
