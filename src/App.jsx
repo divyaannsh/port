@@ -1,3 +1,4 @@
+import { ThemeProvider } from './context/ThemeContext';
 import ThreeScene from './three/ThreeScene';
 import Cursor from './components/Cursor';
 import Navbar from './components/Navbar';
@@ -8,11 +9,11 @@ import Footer from './components/Footer';
 
 export default function App() {
   return (
-    <>
+    <ThemeProvider>
       <ThreeScene />
       <Cursor />
       <Navbar />
-      <main style={{ position:'relative', zIndex:1 }}>
+      <main style={{ position: 'relative', zIndex: 1 }}>
         <Hero />
         <Marquee />
         <About />
@@ -24,6 +25,6 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
-    </>
+    </ThemeProvider>
   );
 }

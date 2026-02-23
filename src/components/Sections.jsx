@@ -15,10 +15,10 @@ export function About() {
         <div className={styles.aboutGrid}>
           <RevealItem>
             <div className={styles.aboutText}>
-              <p>I'm <strong>Divyansh</strong> — a <strong>Frontend Developer and Data Analyst</strong> from Delhi NCR, currently building medical-grade software at Deckmount Electronics and working on AI-powered projects that push limits.</p>
-              <p>My journey started tinkering with <span className={styles.hl}>Data Structures and algorithms</span>, progressed through hackathons with the Indian Army and IBM, and evolved into shipping production software used in clinical environments where code quality is life-critical.</p>
-              <p>When I'm not shipping features, I'm exploring <strong>multilingual AI, data visualization, and RAG systems</strong>. The best software is invisible — it just works, beautifully.</p>
-              <p>B.Tech in Information Technology from <strong>Inderprastha Engineering College</strong> (2020–2024). Carmel Convent School before that.</p>
+              <p>I'm <strong>Divyansh</strong> — a <strong>Frontend Developer and Data Analyst</strong> based in Delhi NCR. I currently build medical-grade software at Deckmount Electronics and work on AI systems that I actually find fascinating.</p>
+              <p>My path started with <span className={styles.hl}>Data Structures and competitive programming</span>, ran through cybersecurity hackathons with the Indian Army and IBM, and landed me in clinical software — where a bug isn't just a bug, it's a patient risk. That sharpens you.</p>
+              <p>Outside work I dig into <strong>multilingual NLP, RAG pipelines, and data storytelling</strong>. I care about software that feels effortless to use — invisible in the best possible way.</p>
+              <p>B.Tech in Information Technology — <strong>Inderprastha Engineering College</strong> (2020–2024).</p>
             </div>
           </RevealItem>
           <RevealItem delay={0.15}>

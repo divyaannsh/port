@@ -4,12 +4,11 @@ import styles from './Hero.module.css';
 
 const TERMINAL_LINES = [
   { delay: 0, text: '$ initializing divyansh.exe', color: '#64ffda' },
-  { delay: 600, text: '> loading: 4+ years experience', color: '#94a3b8' },
-  { delay: 1200, text: '> skills: React, Python, AI/ML, Node', color: '#94a3b8' },
-  { delay: 1800, text: '> hackathons: [ARMY, IBM] ✓ qualified', color: '#ffd166' },
-  { delay: 2400, text: '> medical_grade: ECG, Sleep Sense ✓', color: '#94a3b8' },
-  { delay: 3000, text: '> status: AVAILABLE_FOR_HIRE', color: '#4ade80' },
-  { delay: 3600, text: '█', color: '#64ffda', cursor: true },
+  { delay: 600, text: '> skills: React, Python, AI/ML, Node', color: '#94a3b8' },
+  { delay: 1200, text: '> hackathons: [ARMY, IBM] ✓ qualified', color: '#ffd166' },
+  { delay: 1800, text: '> medical_grade: ECG, Sleep Sense ✓', color: '#94a3b8' },
+  { delay: 2400, text: '> status: AVAILABLE_FOR_HIRE', color: '#4ade80' },
+  { delay: 3000, text: '█', color: '#64ffda', cursor: true },
 ];
 
 function TerminalLine({ line, index }) {
@@ -72,9 +71,9 @@ export default function Hero() {
           <span className={styles.l2}>Srivastava</span>
         </h1>
         <p className={styles.desc}>
-          Senior-level engineer crafting <em>mission-critical systems</em> —
-          from IEC 62304 medical devices to AI-powered SaaS platforms.
-          Precision-engineered. Battle-tested. Production-ready.
+          I build things that actually <em>make a difference</em> — software running
+          in hospitals, AI that understands multiple languages, and products people
+          use every day. Focused on craft, obsessed with quality.
         </p>
         <div className={styles.btns}>
           <a href="#projects" className={styles.btnPrimary}>
