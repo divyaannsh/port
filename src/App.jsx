@@ -1,4 +1,3 @@
-import { ThemeProvider } from './context/ThemeContext';
 import ThreeScene from './three/ThreeScene';
 import Cursor from './components/Cursor';
 import Navbar from './components/Navbar';
@@ -9,7 +8,7 @@ import Footer from './components/Footer';
 
 export default function App() {
   return (
-    <ThemeProvider>
+    <>
       <ThreeScene />
       <Cursor />
       <Navbar />
@@ -25,6 +24,6 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
-    </ThemeProvider>
+    </>
   );
 }

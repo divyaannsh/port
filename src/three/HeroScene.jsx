@@ -1,9 +1,274 @@
-// src/three/HeroScene.jsx — AI Military Robot + Radar HUD + Fighter Jet
+// src/three/HeroScene.jsx — AI Military Robot + Radar HUD + Fighter Jet + Cityscape
 import { useRef, useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 const lerp = (a, b, t) => a + (b - a) * t;
+
+// ─── City Skyline ─────────────────────────────────────────────────────────────
+// Low-poly buildings silhouetted along bottom of scene, with random window glow
+const BUILDINGS = [
+  { x: -11, w: 0.55, h: 1.1 }, { x: -10.1, w: 0.7, h: 1.8 }, { x: -9.1, w: 0.45, h: 1.4 },
+  { x: -8.3, w: 0.9, h: 2.6 }, { x: -7.1, w: 0.5, h: 1.3 }, { x: -6.3, w: 0.65, h: 2.1 },
+  { x: -5.3, w: 0.8, h: 3.0 }, { x: -4.2, w: 0.5, h: 1.6 }, { x: -3.4, w: 1.0, h: 2.3 },
+  { x: -2.1, w: 0.55, h: 1.8 }, { x: -1.1, w: 0.7, h: 2.8 }, { x: -0.1, w: 0.45, h: 1.5 },
+  { x: 0.8, w: 0.9, h: 3.4 }, { x: 2.0, w: 0.5, h: 1.9 }, { x: 2.8, w: 0.75, h: 2.5 },
+  { x: 3.9, w: 0.55, h: 1.4 }, { x: 4.8, w: 1.0, h: 3.1 }, { x: 6.1, w: 0.6, h: 2.0 },
+  { x: 7.2, w: 0.7, h: 1.6 }, { x: 8.3, w: 0.5, h: 2.7 }, { x: 9.4, w: 0.85, h: 1.3 },
+  { x: 10.5, w: 0.6, h: 2.2 }, { x: 11.4, w: 0.45, h: 1.0 },
+];
+
+// window grid offsets pre-computed per building
+const WIN_SEED = BUILDINGS.map(b => {
+  const cols = Math.floor(b.w / 0.12);
+  const rows = Math.floor(b.h / 0.18);
+  const wins = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (Math.random() > 0.38) wins.push([c, r]);
+    }
+  }
+  return wins;
+});
+
+function CityScape() {
+  const windowRefs = useRef([]);
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    windowRefs.current.forEach((m, i) => {
+      if (m) m.material.emissiveIntensity = 0.06 + Math.sin(t * 0.4 + i * 2.7) * 0.03;
+    });
+  });
+
+  let wIdx = 0;
+  return (
+    <group position={[0, -4.6, -6]}>
+      {BUILDINGS.map((b, bi) => (
+        <group key={bi} position={[b.x, b.h / 2, 0]}>
+          {/* building body */}
+          <mesh>
+            <boxGeometry args={[b.w, b.h, 0.3]} />
+            <meshStandardMaterial color="#0a0e18" roughness={0.9} metalness={0.1} />
+          </mesh>
+          {/* edge glow outline */}
+          <mesh>
+            <boxGeometry args={[b.w + 0.01, b.h + 0.01, 0.31]} />
+            <meshBasicMaterial color="#1a2840" transparent opacity={0.35} wireframe />
+          </mesh>
+          {/* windows */}
+          {WIN_SEED[bi].map(([c, r], wi) => {
+            const wx = -b.w / 2 + 0.07 + c * 0.12;
+            const wy = -b.h / 2 + 0.1 + r * 0.18;
+            const col = Math.random() > 0.3 ? '#ffd166' : '#60a5fa';
+            const ref = el => { windowRefs.current[wIdx++] = el; };
+            return (
+              <mesh key={wi} ref={ref} position={[wx, wy, 0.16]}>
+                <planeGeometry args={[0.072, 0.1]} />
+                <meshStandardMaterial color={col} emissive={col}
+                  emissiveIntensity={0.08} transparent opacity={0.45} />
+              </mesh>
+            );
+          })}
+          {/* rooftop antenna */}
+          {b.h > 2.4 && (
+            <mesh position={[0, b.h / 2 + 0.12, 0]}>
+              <cylinderGeometry args={[0.008, 0.008, 0.25, 4]} />
+              <meshStandardMaterial color="#334155" roughness={0.4} metalness={0.8} />
+            </mesh>
+          )}
+        </group>
+      ))}
+    </group>
+  );
+}
+
+// ─── Signal Tower ──────────────────────────────────────────────────────────────
+function SignalTower({ x = 5.5, y = -4.0, z = -4 }) {
+  const dishRef = useRef();
+  const blinkRef = useRef();
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    if (dishRef.current) dishRef.current.rotation.y = t * 0.6;
+    if (blinkRef.current) blinkRef.current.material.emissiveIntensity =
+      Math.sin(t * 3.5) > 0.4 ? 2.5 : 0.0;
+  });
+  return (
+    <group position={[x, y, z]}>
+      {/* main mast */}
+      <mesh><cylinderGeometry args={[0.025, 0.045, 2.8, 6]} />
+        <meshStandardMaterial color="#334155" roughness={0.45} metalness={0.85} /></mesh>
+      {/* cross-braces */}
+      {[0.5, 1.1, 1.7].map((h, i) => (
+        <mesh key={i} position={[0, h - 1.4, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.012, 0.012, 0.45, 4]} />
+          <meshStandardMaterial color="#1e293b" roughness={0.5} metalness={0.7} />
+        </mesh>
+      ))}
+      {/* satellite dish */}
+      <group ref={dishRef} position={[0, 1.2, 0]}>
+        <mesh rotation={[Math.PI / 3, 0, 0]}>
+          <torusGeometry args={[0.22, 0.018, 8, 24, Math.PI * 2]} />
+          <meshStandardMaterial color="#64ffda" emissive="#64ffda" emissiveIntensity={0.4}
+            roughness={0.2} metalness={0.9} />
+        </mesh>
+        <mesh rotation={[Math.PI / 3, 0, 0]}>
+          <sphereGeometry args={[0.18, 12, 6, 0, Math.PI * 2, 0, Math.PI * 0.55]} />
+          <meshStandardMaterial color="#1e293b" roughness={0.6} metalness={0.7}
+            transparent opacity={0.7} side={THREE.DoubleSide} />
+        </mesh>
+      </group>
+      {/* blinking warning light */}
+      <mesh ref={blinkRef} position={[0, 1.5, 0]}>
+        <sphereGeometry args={[0.035, 8, 6]} />
+        <meshStandardMaterial color="#ff4444" emissive="#ff2222" emissiveIntensity={0} />
+      </mesh>
+      <pointLight position={[0, 1.5, 0]} color="#ff4444" intensity={0.6} distance={1.2} decay={2} />
+    </group>
+  );
+}
+
+// ─── Targeting Reticle ─────────────────────────────────────────────────────────
+// Drifts across the scene HUD-style, locks briefly then moves on
+function TargetReticle() {
+  const groupRef = useRef();
+  const ringRef = useRef();
+  const ring2Ref = useRef();
+  const crossH = useRef();
+  const crossV = useRef();
+  const labelRef = useRef();
+  const state = useRef({ px: -3, py: 1.5, tx: 2, ty: -1, phase: 0, lock: false, lockT: 0 });
+
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    const s = state.current;
+
+    // every 4 seconds pick a new target
+    if (t - s.lockT > 3.8) {
+      s.tx = (Math.random() - 0.5) * 8;
+      s.ty = (Math.random() - 0.5) * 5;
+      s.lock = false;
+      s.lockT = t;
+    }
+
+    const dist = Math.hypot(s.px - s.tx, s.py - s.ty);
+    if (dist < 0.08) { s.lock = true; }
+
+    s.px = lerp(s.px, s.tx, s.lock ? 0 : 0.04);
+    s.py = lerp(s.py, s.ty, s.lock ? 0 : 0.04);
+
+    const locking = s.lock;
+    const ringScale = locking ? lerp(1.4, 1.0, Math.min(1, (t - s.lockT) * 2)) : 1.0;
+    const opacity = locking ? 0.9 : 0.5 + Math.sin(t * 2) * 0.1;
+    const col = locking ? '#ff4444' : '#64ffda';
+
+    if (groupRef.current) {
+      groupRef.current.position.set(s.px, s.py, 1.8);
+    }
+    [ringRef, ring2Ref].forEach((r, i) => {
+      if (!r.current) return;
+      const sc = ringScale * (i === 0 ? 1 : 0.65);
+      r.current.scale.set(sc, sc, 1);
+      r.current.material.opacity = opacity * (i === 0 ? 1 : 0.5);
+      r.current.material.color.set(col);
+    });
+    if (crossH.current) {
+      crossH.current.material.opacity = opacity;
+      crossH.current.material.color.set(col);
+    }
+    if (crossV.current) {
+      crossV.current.material.opacity = opacity;
+      crossV.current.material.color.set(col);
+    }
+    if (ringRef.current) ringRef.current.rotation.z = t * (locking ? 1.5 : 0.4);
+  });
+
+  return (
+    <group ref={groupRef}>
+      {/* outer ring */}
+      <mesh ref={ringRef}>
+        <ringGeometry args={[0.22, 0.26, 48]} />
+        <meshBasicMaterial color="#64ffda" transparent opacity={0.5}
+          side={THREE.DoubleSide} depthWrite={false} />
+      </mesh>
+      {/* inner ring */}
+      <mesh ref={ring2Ref}>
+        <ringGeometry args={[0.11, 0.14, 32]} />
+        <meshBasicMaterial color="#64ffda" transparent opacity={0.25}
+          side={THREE.DoubleSide} depthWrite={false} />
+      </mesh>
+      {/* crosshair H */}
+      <mesh ref={crossH} position={[0, 0, 0]}>
+        <planeGeometry args={[0.55, 0.012]} />
+        <meshBasicMaterial color="#64ffda" transparent opacity={0.5}
+          side={THREE.DoubleSide} depthWrite={false} />
+      </mesh>
+      {/* crosshair V */}
+      <mesh ref={crossV} position={[0, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <planeGeometry args={[0.55, 0.012]} />
+        <meshBasicMaterial color="#64ffda" transparent opacity={0.5}
+          side={THREE.DoubleSide} depthWrite={false} />
+      </mesh>
+      {/* corner brackets at 45° */}
+      {[0, 1, 2, 3].map(i => (
+        <mesh key={i} rotation={[0, 0, (i * Math.PI) / 2 + Math.PI / 4]}
+          position={[Math.cos((i * Math.PI) / 2 + Math.PI / 4) * 0.22,
+          Math.sin((i * Math.PI) / 2 + Math.PI / 4) * 0.22, 0]}>
+          <planeGeometry args={[0.1, 0.012]} />
+          <meshBasicMaterial color="#64ffda" transparent opacity={0.7}
+            side={THREE.DoubleSide} depthWrite={false} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// ─── Search Beam ───────────────────────────────────────────────────────────────
+// A sweeping cone of light from the ground — like a military searchlight
+function SearchBeam({ x = -6, z = -3 }) {
+  const beamRef = useRef();
+  const coneRef = useRef();
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    const sweep = Math.sin(t * 0.7) * 0.6;   // oscillate ±0.6 rad
+    if (beamRef.current) {
+      beamRef.current.rotation.z = sweep;
+      beamRef.current.rotation.x = 0.15;
+    }
+    if (coneRef.current) {
+      coneRef.current.material.opacity = 0.06 + Math.sin(t * 1.4) * 0.025;
+    }
+  });
+  return (
+    <group position={[x, -4.8, z]}>
+      {/* base housing */}
+      <mesh>
+        <cylinderGeometry args={[0.09, 0.12, 0.15, 8]} />
+        <meshStandardMaterial color="#1e293b" roughness={0.5} metalness={0.85} />
+      </mesh>
+      {/* rotating head + beam */}
+      <group ref={beamRef} position={[0, 0.1, 0]}>
+        <mesh>
+          <sphereGeometry args={[0.07, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <meshStandardMaterial color="#334155" roughness={0.3} metalness={0.9} />
+        </mesh>
+        {/* the cone beam */}
+        <mesh ref={coneRef} position={[0, 1.8, 0]} rotation={[Math.PI, 0, 0]}>
+          <coneGeometry args={[0.8, 3.6, 32, 1, true]} />
+          <meshBasicMaterial color="#64ffda" transparent opacity={0.07}
+            side={THREE.DoubleSide} depthWrite={false} />
+        </mesh>
+        {/* lens glow */}
+        <mesh position={[0, 0.08, 0]}>
+          <sphereGeometry args={[0.05, 8, 6]} />
+          <meshStandardMaterial color="#64ffda" emissive="#64ffda" emissiveIntensity={1.8}
+            roughness={0.05} />
+        </mesh>
+        <pointLight position={[0, 0.1, 0]} color="#64ffda" intensity={1.2} distance={1.5} decay={2} />
+      </group>
+    </group>
+  );
+}
+
 
 // ─── Fighter Jet (no sonic boom) ───────────────────────────────────────────────
 function FighterJet({ mouseX, mouseY, period = 6, offsetT = 0, baseZ = 1.5, scale = 1 }) {
@@ -568,6 +833,17 @@ export default function HeroScene({ mouseX, mouseY }) {
       <PassengerPlane period={11} offsetT={0} baseY={3.8} baseZ={-0.5} scale={0.85} />
       <PassengerPlane period={14} offsetT={5.5} baseY={-2.6} baseZ={-1.2} scale={0.7} />
       <PassengerPlane period={9} offsetT={2.2} baseY={1.4} baseZ={-2.0} scale={0.55} />
+      <PassengerPlane period={13} offsetT={7.0} baseY={-1.1} baseZ={-0.8} scale={0.78} />
+      <PassengerPlane period={8} offsetT={3.8} baseY={2.9} baseZ={-3.0} scale={0.45} />
+      <PassengerPlane period={16} offsetT={1.0} baseY={-3.5} baseZ={-2.5} scale={0.62} />
+
+      {/* — Cityscape + Cinematic Ground Story — */}
+      <CityScape />
+      <SignalTower x={-8.5} y={-4.0} z={-5} />
+      <SignalTower x={6.5} y={-4.0} z={-4.5} />
+      <TargetReticle />
+      <SearchBeam x={-5.5} z={-4} />
+      <SearchBeam x={4.5} z={-5} />
     </group>
   );
 }

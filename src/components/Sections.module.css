@@ -2,6 +2,9 @@
 
 .sw {
   padding: 7rem 4rem;
+  background: var(--bg);
+  position: relative;
+  z-index: 1;
 }
 
 .bgAlt {

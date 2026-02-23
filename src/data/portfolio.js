@@ -3,19 +3,19 @@
 export const experience = [
   {
     company: 'Deckmount Electronics',
-    role: 'Software Development Engineer',
-    period: 'May 2025 — Present',
+    role: 'JR. Software Development Engineer',
+    period: 'May 2024 — Present',
     location: 'Gurgaon, India',
     impact: { num: '40%', label: 'Latency Cut' },
-    desc: 'Architected a 12-lead ECG monitoring system with high-frequency waveform rendering. Built Sleep Sense polysomnography app (SpO2, Pulse, CPAP) with PyQt5. Ensured 100% IEC 62304 medical safety compliance with zero packet loss during 24/7 patient monitoring.',
+    desc: 'Architected a 12-lead ECG monitoring system with high-frequency waveform rendering, slashing signal processing latency by 40% through optimized buffer management. Pioneered Sleep Sense to capture multi-parameter polysomnography data (SpO2, Pulse, CPAP) via PyQt5. Boosted real-time data refresh rates by 35% with zero packet loss during 24/7 patient monitoring. Ensured 100% IEC 62304 compliance; spearheaded 10+ custom interface modules driving 25% improvement in diagnostic precision.',
   },
   {
     company: 'Zidio Development',
-    role: 'Frontend Developer',
-    period: 'Sep 2024 — Jan 2025',
+    role: 'Web Developer',
+    period: 'Jun 2024 — Dec 2024',
     location: 'Remote',
     impact: { num: '50%', label: 'Engagement Up' },
-    desc: 'Built RESTful API integrations for secure auth and real-time streaming. Designed 10+ scalable React.js UI components with dynamic dashboards and filtering. Optimized with Redux Toolkit, lazy loading, and code-splitting.',
+    desc: 'Facilitated RESTful API integrations for secure auth and real-time streaming, elevating system throughput by 40%. Designed 10+ scalable React.js UI components — 50% surge in user interaction. Optimized frontend performance by 30% with Redux Toolkit, lazy loading, and granular code-splitting.',
   },
   {
     company: 'Ingelt Marketing',
