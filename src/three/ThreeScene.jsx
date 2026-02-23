@@ -26,7 +26,7 @@ export default function ThreeScene() {
 
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}>
-      <Canvas camera={{ position: [0, 0.4, 8.5], fov: 44 }} gl={{ alpha: true, antialias: true }} dpr={[1, 2]}>
+      <Canvas camera={{ position: [0, 0.4, 8.5], fov: 44 }} gl={{ alpha: true, antialias: true }} dpr={[1, 2]} style={{ pointerEvents: 'none' }}>
         {/* Brightened ambient so robot body is clearly visible */}
         <ambientLight color="#c8d8ff" intensity={6} />
         <directionalLight position={[4, 8, 4]} intensity={3.5} color="#ffffff" />
