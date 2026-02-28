@@ -1,5 +1,4 @@
 import ThreeScene from './three/ThreeScene';
-import Cursor from './components/Cursor';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Marquee from './components/Marquee';
@@ -10,7 +9,6 @@ export default function App() {
   return (
     <>
       <ThreeScene />
-      <Cursor />
       <Navbar />
       <main style={{ position: 'relative', zIndex: 1 }}>
         <Hero />

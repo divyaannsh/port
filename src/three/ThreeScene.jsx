@@ -4,7 +4,16 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import HeroScene from './HeroScene';
 
 function CameraRig({ mouseX, mouseY }) {
-  const { camera } = useThree();
+  const { camera, size } = useThree();
+
+  useEffect(() => {
+    // Adjust base Z position based on aspect ratio
+    // If aspect is narrow (mobile), pull camera back
+    const isMobile = size.width < 768;
+    const baseZ = isMobile ? 11 : 8.5;
+    camera.position.z = baseZ;
+  }, [size.width, camera]);
+
   useFrame(() => {
     camera.position.x += ((mouseX.current || 0) * 1.2 - camera.position.x) * 0.05;
     camera.position.y += (-(mouseY.current || 0) * 0.6 + 0.4 - camera.position.y) * 0.05;
