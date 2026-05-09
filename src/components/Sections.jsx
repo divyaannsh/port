@@ -58,11 +58,11 @@ export function Experience() {
                   <div className={styles.expRole}>{e.role}</div>
                   <div className={styles.expDesc}>{e.desc}</div>
                   {e.highlights && e.highlights.length > 0 && (
-                    <div className={styles.expHighlights}>
+                    <ul className={styles.expHighlights}>
                       {e.highlights.map(h => (
-                        <span key={h} className={styles.expHighlight}>{h}</span>
+                        <li key={h} className={styles.expHighlight}>{h}</li>
                       ))}
-                    </div>
+                    </ul>
                   )}
                 </div>
                 <div className={styles.expImpact}>
