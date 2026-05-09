@@ -12,7 +12,7 @@ export default function Footer() {
         ~/divyansh.dev
       </div>
       <div style={{ fontFamily: 'Fira Code, monospace', fontSize: '0.72rem', color: '#64748b' }}>
-        crafted with curiosity & Three.js · 2024
+        crafted with curiosity & Three.js · 2026
       </div>
     </footer>
   );

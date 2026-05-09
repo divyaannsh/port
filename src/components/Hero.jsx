@@ -3,12 +3,14 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './Hero.module.css';
 
 const TERMINAL_LINES = [
-  { delay: 0, text: '$ initializing divyansh.exe', color: '#64ffda' },
-  { delay: 600, text: '> skills: React, Python, AI/ML, Node', color: '#94a3b8' },
-  { delay: 1200, text: '> hackathons: [ARMY, IBM] ✓ qualified', color: '#ffd166' },
-  { delay: 1800, text: '> medical_grade: ECG, Sleep Sense ✓', color: '#94a3b8' },
-  { delay: 2400, text: '> status: AVAILABLE_FOR_HIRE', color: '#4ade80' },
-  { delay: 3000, text: '█', color: '#64ffda', cursor: true },
+  { delay: 0,    text: '$ initializing divyansh.dev', color: '#64ffda' },
+  { delay: 500,  text: '> loading: CardioX ECG v4.2 ✓ shipped', color: '#4ade80' },
+  { delay: 1100, text: '> ecg_leads: 12 | arrhythmias: 15+ detected', color: '#94a3b8' },
+  { delay: 1700, text: '> ai_stack: LangChain, FAISS, LLaMA3, RAG', color: '#a78bfa' },
+  { delay: 2300, text: '> uptime: 99.9% | patients/day: 500+', color: '#ffd166' },
+  { delay: 2900, text: '> aws_lambda: [activate, validate, auth] ✓', color: '#94a3b8' },
+  { delay: 3500, text: '> status: AVAILABLE_FOR_HIRE', color: '#4ade80' },
+  { delay: 4100, text: '█', color: '#64ffda', cursor: true },
 ];
 
 function TerminalLine({ line, index }) {
@@ -64,16 +66,16 @@ export default function Hero() {
         </div>
         <div className={styles.eyebrow}>
           <div className={styles.eyeLine} />
-          <span>Frontend Dev × Data Analyst × AI Engineer</span>
+          <span>Clinical Software Engineer · ECG Systems · Medical AI</span>
         </div>
         <h1 ref={h1Ref} className={styles.h1}>
           <span className={styles.l1}>Divyansh</span>
           <span className={styles.l2}>Srivastava</span>
         </h1>
         <p className={styles.desc}>
-          I build things that actually <em>make a difference</em> — software running
-          in hospitals, AI that understands multiple languages, and products people
-          use every day. Focused on craft, obsessed with quality.
+          Clinical Software Engineer who shipped a hospital-deployed 12-lead
+          ECG system from scratch — signal processing to AWS backend — in 55 days.
+          1+ year shipping IEC 62304-compliant software.
         </p>
         <div className={styles.btns}>
           <a href="#projects" className={styles.btnPrimary}>
@@ -85,9 +87,10 @@ export default function Hero() {
         </div>
         <div className={styles.stats}>
           {[
-            { num: '10+', label: 'Shipped' },
-            { num: '2', label: 'Hackathons' },
-            { num: '40%', label: 'Perf Δ' },
+            { num: '50k+', label: 'Lines Shipped' },
+            { num: '15+', label: 'Arrhythmias' },
+            { num: '500+', label: 'Daily Patients' },
+            { num: '99.9%', label: 'Uptime SLA' },
           ].map(s => (
             <div key={s.label} className={styles.statBox}>
               <div className={styles.statNum}>{s.num}</div>
@@ -109,7 +112,7 @@ export default function Hero() {
             <span style={{ background: '#fbbf24' }} />
             <span style={{ background: '#4ade80' }} />
           </div>
-          <span className={styles.panelTitle}>DIVYANSH_OS v4.2 — CLASSIFIED</span>
+          <span className={styles.panelTitle}>CLINICAL_SYS v4.2 — SECURE</span>
           <div className={styles.panelLed} />
         </div>
 
@@ -126,10 +129,11 @@ export default function Hero() {
         {/* skill bars */}
         <div className={styles.skillBars}>
           {[
-            { label: 'React.js', pct: 96, color: '#64ffda' },
-            { label: 'Python / AI', pct: 91, color: '#a78bfa' },
-            { label: 'Node.js', pct: 85, color: '#60a5fa' },
-            { label: 'Signal Proc', pct: 80, color: '#ffd166' },
+            { label: 'Python / Medical', pct: 97, color: '#64ffda' },
+            { label: 'React.js / TS', pct: 94, color: '#a78bfa' },
+            { label: 'Signal Processing', pct: 90, color: '#ffd166' },
+            { label: 'LangChain / AI', pct: 85, color: '#60a5fa' },
+            { label: 'AWS / DevOps', pct: 80, color: '#f472b6' },
           ].map(s => (
             <div key={s.label} className={styles.barRow}>
               <div className={styles.barMeta}>

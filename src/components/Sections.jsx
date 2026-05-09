@@ -7,18 +7,19 @@ import styles from './Sections.module.css';
 
 // ─── About ────────────────────────────────────────────────────────
 export function About() {
-  const techs = ['React.js', 'TypeScript', 'Node.js', 'Python', 'Redux', 'LangChain', 'AWS', 'MongoDB', 'PyQt5', 'Tailwind', 'Docker', 'OpenAI API', 'FAISS', 'Gradio', 'Plotly'];
+  const techs = ['Python', 'PyQt5', 'SciPy', 'React.js', 'TypeScript', 'Node.js', 'LangChain', 'FAISS', 'AWS Lambda', 'PostgreSQL', 'Redux', 'MongoDB', 'Docker', 'Matplotlib', 'Gradio'];
   return (
     <section id="about" className={styles.about}>
       <div className={styles.sw}>
-        <SectionHeader num="// 01 — about" title="The person <em>behind</em> the code" />
+        <SectionHeader num="// 01 — about" title="The engineer <em>behind</em> the code" />
         <div className={styles.aboutGrid}>
           <RevealItem>
             <div className={styles.aboutText}>
-              <p>I'm <strong>Divyansh</strong> — a <strong>Frontend Developer and Data Analyst</strong> based in Delhi NCR. I currently build medical-grade software at Deckmount Electronics and work on AI systems that I actually find fascinating.</p>
-              <p>My path started with <span className={styles.hl}>Data Structures and competitive programming</span>, ran through cybersecurity hackathons with the Indian Army and IBM, and landed me in clinical software — where a bug isn't just a bug, it's a patient risk. That sharpens you.</p>
-              <p>Outside work I dig into <strong>multilingual NLP, RAG pipelines, and data storytelling</strong>. I care about software that feels effortless to use — invisible in the best possible way.</p>
-              <p>B.Tech in Information Technology — <strong>Inderprastha Engineering College</strong> (2020–2024).</p>
+              <p>I'm a <strong>Clinical Software Engineer</strong> specializing in medical-grade signal processing and diagnostic software.</p>
+              <p>At Deckmount Electronics, I architected <span className={styles.hl}>CardioX</span> — a 12-lead ECG monitoring system deployed in 3 hospitals, serving 500+ patients daily. Built end-to-end in ~55 days: Pan-Tompkins QRS detection, 15+ arrhythmia detection, PQRST delineation, HRV analysis, Holter monitoring, and a hardware-bound AWS license system.</p>
+              <p>I write production Python at the intersection of <strong>signal processing, PyQt5 desktop applications, and clinical standards</strong> (IEC 62304, GE/Philips measurement protocols, ESC/NASPE HRV Task Force 1996).</p>
+              <p>Outside medical software — RAG pipelines, voice bots, and full-stack SaaS. But my core is clinical.</p>
+              <p>B.Tech IT · <strong>Inderprastha Engineering College</strong> · 8.1 GPA.</p>
             </div>
           </RevealItem>
           <RevealItem delay={0.15}>
@@ -26,6 +27,12 @@ export function About() {
               <div className={styles.cardTitle}>// Tech I work with</div>
               <div className={styles.tags}>
                 {techs.map(t => <span key={t} className={styles.tag}>{t}</span>)}
+              </div>
+              <div className={styles.aboutMeta}>
+                <div className={styles.metaRow}><span className={styles.metaKey}>Location</span><span className={styles.metaVal}>Delhi NCR, India</span></div>
+                <div className={styles.metaRow}><span className={styles.metaKey}>Email</span><span className={styles.metaVal}>divyanshsrivastav72@gmail.com</span></div>
+                <div className={styles.metaRow}><span className={styles.metaKey}>Phone</span><span className={styles.metaVal}>+91 9560350477</span></div>
+                <div className={styles.metaRow}><span className={styles.metaKey}>Status</span><span className={styles.metaVal} style={{ color: '#4ade80' }}>Open to Opportunities</span></div>
               </div>
             </div>
           </RevealItem>
@@ -50,6 +57,13 @@ export function Experience() {
                   <div className={styles.expCompany}>{e.company}</div>
                   <div className={styles.expRole}>{e.role}</div>
                   <div className={styles.expDesc}>{e.desc}</div>
+                  {e.highlights && e.highlights.length > 0 && (
+                    <div className={styles.expHighlights}>
+                      {e.highlights.map(h => (
+                        <span key={h} className={styles.expHighlight}>{h}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className={styles.expImpact}>
                   <div className={styles.impactNum}>{e.impact.num}</div>
@@ -64,14 +78,18 @@ export function Experience() {
   );
 }
 
+
+
 // ─── Projects ─────────────────────────────────────────────────────
 export function Projects() {
+  // Filter out the CardioX featured project (span 12) from the grid — it has its own section
+  const gridProjects = projects.filter(p => !p.isFeatured);
   return (
     <section id="projects" className={styles.bgAlt}>
       <div className={styles.sw}>
-        <SectionHeader num="// 03 — projects" title="Things I've <em>built</em>" />
+        <SectionHeader num="// 04 — projects" title="Things I've <em>built</em>" />
         <div className={styles.projGrid}>
-          {projects.map((p, i) => (
+          {gridProjects.map((p, i) => (
             <RevealItem key={p.name} delay={i * 0.07} className={styles[`span${p.span}`]}>
               <div className={styles.projCard} style={{ '--card-accent': p.accent }}>
                 <div className={styles.projCat}>
@@ -104,8 +122,8 @@ export function Hackathons() {
   return (
     <section id="hackathons">
       <div className={styles.sw}>
-        <SectionHeader num="// 04 — hackathons" title="Building under <em>pressure</em>">
-          48–72 hours. No sleep. Just motivation, caffeine, and a laptop. Two hackathons that showed me what passionate people can build together.
+        <SectionHeader num="// 05 — hackathons" title="Building under <em>pressure</em>">
+          48–72 hours. No sleep. Just motivation, caffeine, and a laptop. Three competitions that shaped how I think under pressure.
         </SectionHeader>
         <div className={styles.hackGrid}>
           {hackathons.map((h, i) => (
@@ -131,7 +149,7 @@ export function Skills() {
   return (
     <section id="skills" className={styles.bgAlt}>
       <div className={styles.sw}>
-        <SectionHeader num="// 05 — skills" title="My <em>arsenal</em>" />
+        <SectionHeader num="// 06 — skills" title="My <em>arsenal</em>" />
         <div className={styles.skillsWrap}>
           {skills.map((group, gi) => (
             <RevealItem key={group.label} delay={gi * 0.1}>
@@ -162,7 +180,7 @@ export function Testimonials() {
   return (
     <section id="testimonials">
       <div className={styles.sw}>
-        <SectionHeader num="// 06 — testimonials" title="What people <em>say</em>" />
+        <SectionHeader num="// 07 — testimonials" title="What people <em>say</em>" />
         <div className={styles.testGrid}>
           {testimonials.map((t, i) => (
             <RevealItem key={t.author} delay={i * 0.1}>
@@ -186,13 +204,13 @@ export function Contact() {
     <section id="contact" className={`${styles.bgAlt} ${styles.contactSection}`}>
       <div className={styles.sw}>
         <RevealItem>
-          <span className={styles.contactPre}>// 07 — let's connect</span>
+          <span className={styles.contactPre}>// 08 — let's connect</span>
           <h2 className={styles.contactBig}>
             Ready to build<br />
             <span>something great?</span>
           </h2>
           <p className={styles.contactSub}>
-            Open to full-time roles, freelance projects, and interesting collaborations.<br />
+            Open to full-time SDE roles, medical software, AI/ML projects, and freelance work.<br />
             Let's make something people remember.
           </p>
           <div className={styles.contactLinks}>
@@ -200,7 +218,7 @@ export function Contact() {
             <a href="https://www.linkedin.com/in/divyansh-srivastav-a00127221/" target="_blank" rel="noreferrer" className={styles.btnGhost}>↗ LinkedIn</a>
             <a href="https://github.com/divyaannsh" target="_blank" rel="noreferrer" className={styles.btnGhost}>⌥ GitHub</a>
           </div>
-          <div className={styles.contactInfo}>divyanshsrivastav72@gmail.com · +91 9560350477</div>
+          <div className={styles.contactInfo}>divyanshsrivastav72@gmail.com · +91 9560350477 · Delhi NCR, India</div>
         </RevealItem>
       </div>
     </section>

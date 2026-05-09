@@ -152,6 +152,10 @@
   grid-column: span 6;
 }
 
+.span4 {
+  grid-column: span 4;
+}
+
 .span12 {
   grid-column: span 12;
 }
@@ -536,6 +540,7 @@
   .span7,
   .span5,
   .span6,
+  .span4,
   .span12 {
     grid-column: span 12 !important;
   }
